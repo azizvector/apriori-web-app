@@ -17,15 +17,15 @@ export default function Upload() {
       label: 'No'
     },
     {
+      fieldId: 'order_id',
+      label: 'Order ID',
+    },
+    {
       fieldId: 'order_date',
       label: 'Order Date',
       renderItem: (order_date: string) => (<>
         {moment(order_date).format('DD-MM-yyyy')}
       </>)
-    },
-    {
-      fieldId: 'order_time',
-      label: 'Order Time',
     },
     {
       fieldId: 'products',
@@ -61,7 +61,7 @@ export default function Upload() {
           first_sheet_name = workbook.SheetNames[0],
           worksheet = workbook.Sheets[first_sheet_name],
           data = XLSX.utils.sheet_to_json(worksheet, { raw: false }),
-          res = data.map((o: any) => [o.order_id, o.date, o.time, o.products])
+          res = data.map((o: any) => [o.order_id, o.date, o.products])
         setDatas(res)
       }
       reader.readAsArrayBuffer(file);

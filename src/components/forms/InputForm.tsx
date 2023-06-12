@@ -1,10 +1,13 @@
 import classNames from 'classnames';
+import { UseFormRegister } from "react-hook-form";
 
 interface IInput {
+  type?: string | undefined;
   label?: string;
-  name?: string;
+  name: string;
   value?: string | number;
   placeholder?: string;
+  register: UseFormRegister<any>;
   onChange?: (event: string) => void;
   prefix?: string | React.ReactElement;
   disabled?: boolean;
@@ -12,7 +15,9 @@ interface IInput {
 }
 
 export function Input({
+  type,
   label,
+  register,
   onChange,
   name,
   value,
@@ -37,12 +42,11 @@ export function Input({
       )}
       <div className="relative">
         <input
-          type="text"
-          onChange={handleChange}
-          name={name}
+          type={type}
           value={value}
           placeholder={placeholder}
           disabled={disabled}
+          {...register(name)}
           className={classNames(
             'block w-full p-3 rounded border text-[#201B1C] h-11 leading-4 placeholder:text-[#BDBDBD] focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-[#F3F6F9]', {
             'border-[#DD2525]': error,
