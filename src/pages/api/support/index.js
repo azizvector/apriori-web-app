@@ -1,4 +1,5 @@
 import { pool } from "@/config/mysql-conn";
+import { isEmpty } from "lodash";
 
 export default async function handler(req, res) {
   switch (req.method) {
@@ -12,6 +13,7 @@ export default async function handler(req, res) {
 const saveSupport = async (req, res) => {
   try {
     const { supports } = req.body;
+    if (isEmpty(supports)) return res.status(400).send("Tidak ada items yang memenuhi minimal support");
     const sql = "INSERT INTO support (summary_id, itemset, candidate, support) VALUES ?"
     const supportArray = supports.map(o=>[o.summary_id,o.itemset,o.candidate, o.support])
     const result = await pool.query(sql, [supportArray]);

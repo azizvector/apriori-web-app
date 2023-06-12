@@ -130,7 +130,11 @@ export default function Dashboard() {
     }
 
     // Post support
-    await axios.post("/api/support", { supports: supportList })
+    try {
+      await axios.post("/api/support", { supports: supportList })
+    } catch (e) {
+      console.log('e', e);
+    }
 
     var ruleArray = []
     for (let itemset of frequentItemsets) {
@@ -160,7 +164,11 @@ export default function Dashboard() {
     }
 
     // Post rule
-    await axios.post("/api/rule", { confidence: ruleArray })
+    try {
+      await axios.post("/api/rule", { confidence: ruleArray })
+    } catch (e) {
+      console.log('e', e);
+    }
   }
 
   return (
