@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { UseFormRegister } from "react-hook-form";
+import InputMask from 'react-input-mask';
 
 interface IInput {
   type?: string | undefined;
@@ -8,51 +9,61 @@ interface IInput {
   value?: string | number;
   placeholder?: string;
   register: UseFormRegister<any>;
-  onChange?: (event: string) => void;
   prefix?: string | React.ReactElement;
   disabled?: boolean;
   error?: string;
+  mask?: string | Array<(string | RegExp)>;
+  maskChar?: string | null | undefined;
 }
 
 export function Input({
   type,
   label,
   register,
-  onChange,
   name,
   value,
   placeholder,
   prefix,
   disabled,
-  error
+  error,
+  mask,
+  maskChar
 }: IInput): React.ReactElement {
-
-  const handleChange = (event: any) => {
-    if (onChange) {
-      onChange(event);
-    }
-  }
-
   return (
     <div>
       {label && (
-        <label className="block leading-6 text-[#201B1C] font-medium mb-2">
+        <label className="block leading-6 text-[#464E5F] font-medium mb-2">
           {label}
         </label>
       )}
       <div className="relative">
-        <input
+        {type !== "masked" && <input
           type={type}
           value={value}
           placeholder={placeholder}
           disabled={disabled}
           {...register(name)}
           className={classNames(
-            'block w-full p-3 rounded border text-[#201B1C] h-11 leading-4 placeholder:text-[#BDBDBD] focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-[#F3F6F9]', {
+            'block w-full p-3 rounded border text-[#464E5F] h-11 leading-4 placeholder:text-[#BDBDBD] focus:outline-none disabled:bg-[#F3F6F9]', {
             'border-[#DD2525]': error,
             'border-[#E4E6EF]': !error
           })}
-        />
+        />}
+        {type === "masked" &&
+          <InputMask
+            value={value}
+            mask={mask ?? ''}
+            maskChar={maskChar}
+            placeholder={placeholder}
+            disabled={disabled}
+            {...register(name)}
+            className={classNames(
+              'block w-full p-3 rounded border text-[#464E5F] h-11 leading-4 placeholder:text-[#BDBDBD] focus:outline-none disabled:bg-[#F3F6F9]', {
+              'border-[#DD2525]': error,
+              'border-[#E4E6EF]': !error
+            })}
+          />
+        }
         {prefix && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
             {prefix}

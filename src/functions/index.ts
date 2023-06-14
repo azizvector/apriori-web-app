@@ -129,3 +129,13 @@ export function calculateSupport(dataset: any, itemset: any) {
   }
   return count;
 }
+
+export const twoDecimalPlacesWithoutRound = (num: number): number => {
+  if (num % 1 === 0) {
+      return num;
+  }
+  const stringNum = num.toString();
+  let finalNum = stringNum.slice(0, stringNum.indexOf('.') + 3);
+  
+  return Number(finalNum);
+};

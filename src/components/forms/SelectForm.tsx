@@ -48,23 +48,23 @@ export function Select({
         {({ open }) => (
           <>
             {label && (
-              <Listbox.Label className="block leading-6 text-[#201B1C] font-medium mb-2">
+              <Listbox.Label className="block leading-6 text-[#464E5F] font-medium mb-2">
                 {label}
               </Listbox.Label>
             )}
             <div className="relative">
               <Listbox.Button
                 className={classNames(
-                  'relative w-full cursor-default rounded border p-3 text-[#201B1C] h-11 leading-4 placeholder:text-[#BDBDBD] focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-[#F3F6F9]', {
+                  'relative w-full cursor-default rounded border p-3 text-[#464E5F] h-11 leading-4 placeholder:text-[#BDBDBD] focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-[#F3F6F9]', {
                   'border-[#DD2525]': error,
                   'border-[#E4E6EF]': !error
                 })}
               >
-                <span className="block text-[#201B1C] text-left">
+                <span className="block text-[#464E5F] text-left">
                   {value?.label ? value.label : placeholder}
                 </span>
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <ChevronDownIcon className="w-5 h-5 text-[#201B1C]" />
+                  <ChevronDownIcon className="w-5 h-5 text-[#464E5F]" />
                 </div>
               </Listbox.Button>
               {error && (
@@ -100,7 +100,7 @@ export function Select({
                         classNames(
                           'relative cursor-default select-none p-2', {
                           'bg-indigo-600 text-white': active,
-                          'text-[#201B1C]': !active
+                          'text-[#464E5F]': !active
                         })
                       }
                       value={option}

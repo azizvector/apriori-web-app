@@ -1,13 +1,14 @@
 import { CalendarIcon } from '@heroicons/react/24/outline';
+import { Controller, Control } from "react-hook-form";
 import moment from 'moment';
 import Datetime from 'react-datetime';
 
 interface IDate {
   label?: string;
-  name?: string;
+  name: string;
   value?: string;
   placeholder?: string;
-  onChange?: (event: any) => void;
+  control: Control<any> | undefined;
   prefix?: string | React.ReactElement;
   dateFormat?: string | boolean;
   timeFormat?: string | boolean;
@@ -17,7 +18,7 @@ interface IDate {
 
 export function Date({
   label,
-  onChange,
+  control,
   name,
   value,
   placeholder,
@@ -26,38 +27,37 @@ export function Date({
   disabled,
   error
 }: IDate): React.ReactElement {
-
-  const handleChange = (value: any) => {
-    if (onChange) {
-      onChange({ target: { name, value: moment(value).toDate() } });
-    }
-  }
-
   return (
     <div>
       {label && (
-        <label className="block leading-6 text-[#201B1C] font-medium mb-2">
+        <label className="block leading-6 text-[#464E5F] font-medium mb-2">
           {label}
         </label>
       )}
       <div className="relative">
-        <Datetime
-          input={true}
-          timeFormat={timeFormat}
-          dateFormat={dateFormat}
-          onChange={handleChange}
-          closeOnSelect={true}
-          value={value}
-          inputProps={{
-            placeholder: placeholder,
-            name: name,
-            disabled: disabled,
-            className: `block w-full border-b ${error ? 'border-[#DD2525]' : 'border-[#E4E6EF]'
-              } py-3 pl-10 pr-3 rounded border text-[#201B1C] h-11 leading-4 placeholder:text-[#BDBDBD] focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-[#F3F6F9]`
-          }}
+        <Controller
+          name={name}
+          control={control}
+          render={({ field }) =>
+            <Datetime
+              input={true}
+              timeFormat={timeFormat}
+              dateFormat={dateFormat}
+              onChange={field.onChange}
+              closeOnSelect={true}
+              value={value}
+              inputProps={{
+                placeholder: placeholder,
+                name: field.name,
+                disabled: disabled,
+                className: `block w-full border-b ${error ? 'border-[#DD2525]' : 'border-[#E4E6EF]'
+                  } py-3 pl-10 pr-3 rounded border text-[#464E5F] h-11 leading-4 placeholder:text-[#BDBDBD] focus:outline-none disabled:bg-[#F3F6F9]`
+              }}
+            />
+          }
         />
         <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none">
-          <CalendarIcon className="w-5 h-5 text-[#201B1C] ml-3" />
+          <CalendarIcon className="w-5 h-5 text-[#464E5F] ml-3" />
         </div>
       </div>
       {error && (

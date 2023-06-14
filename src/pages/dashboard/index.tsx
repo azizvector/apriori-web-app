@@ -1,23 +1,47 @@
+import { useEffect, useState } from 'react';
+import { ShoppingBagIcon, ClipboardDocumentIcon } from '@heroicons/react/24/solid'
 import Layout from '@/layouts';
 import Image from 'next/image';
-import { ShoppingBagIcon, ClipboardDocumentIcon } from '@heroicons/react/24/solid'
+import axios from 'axios';
 
 export default function Dashboard() {
+  const [count, setCount] = useState<any>({
+    transaction: 0,
+    process: 0
+  });
+
+  useEffect(() => {
+    getSummary();
+  }, []);
+
+  const getSummary = async () => {
+    try {
+      const resTrans = await axios.get("/api/count/transaction");
+      const resProcess = await axios.get("/api/count/process");
+      setCount({
+        transaction: resTrans.data.count,
+        process: resProcess.data.count,
+      })
+    } catch (error: any) {
+      console.error(error.response.data.message);
+    }
+  }
+
   return (
     <div className="grid grid-cols-2 gap-11">
       <div className="col-span-1">
         <div className="grid gap-11">
           <div className="grid grid-cols-2 gap-11">
             <div className="col-span-1">
-              <div className="bg-[#F64E60] py-9 px-8 rounded-xl">
-                <div className="flex justify-between">
+              <div className="bg-[#3699FF] py-9 px-8 rounded-xl">
+                <div className="flex items-end justify-between">
                   <h3 className="text-3xl text-white font-semibold uppercase">
-                    1000
+                    {count.transaction}
                   </h3>
                   <ShoppingBagIcon className="w-10 h-10 text-white" />
                 </div>
                 <div className="mt-4 text-white font-semibold uppercase">
-                  Total Transaction
+                  Total Transaksi
                 </div>
               </div>
             </div>
@@ -25,12 +49,12 @@ export default function Dashboard() {
               <div className="bg-[#1BC5BD] py-9 px-8 rounded-xl shadow-[0px_0px_20px_rgba(56,71,109,0.03)]">
                 <div className="flex justify-between">
                   <h3 className="text-3xl text-white font-semibold uppercase">
-                    1000
+                    {count.process}
                   </h3>
                   <ClipboardDocumentIcon className="w-10 h-10 text-white" />
                 </div>
                 <div className="mt-4 text-white font-semibold uppercase">
-                  Total Processed
+                  Total Proses
                 </div>
               </div>
             </div>
@@ -87,19 +111,19 @@ export default function Dashboard() {
             <h3 className="mb-6 text-xl text-[#464E5F] font-semibold uppercase">
               Indikator Algoritma Apriori
             </h3>
-            <div className="mb-1.5 text-lg text-gray-600 font-semibold">
+            <div className="mb-1.5 text-lg text-gray-500 font-semibold">
               Support (Penunjang)
             </div>
             <div className="mb-6 text-gray-400">
               adalah persentase kombinasi item
             </div>
-            <div className="mb-1.5 text-lg text-gray-600 font-semibold">
+            <div className="mb-1.5 text-lg text-gray-500 font-semibold">
               Confidence (Kepastian)
             </div>
             <div className="mb-6 text-gray-400">
               adalah kuatnya hubungan item antar item dalam aturan assosiatif
             </div>
-            <div className="mb-1.5 text-lg text-gray-600 font-semibold">
+            <div className="mb-1.5 text-lg text-gray-500 font-semibold">
               Lift Ratio
             </div>
             <div className="text-gray-400">

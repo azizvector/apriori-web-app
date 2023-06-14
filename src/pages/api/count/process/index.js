@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
 const getSummaryCount = async (req, res) => {
   try {
-    const results = await pool.query("SELECT COUNT(summary_id) as count FROM summary");
+    let results = await pool.query("SELECT COUNT(summary_id) as count FROM summary");
     if (isEmpty(results)) results = [{ count: 0}]
     return res.status(200).json(results[0]);
   } catch (error) {

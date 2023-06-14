@@ -15,12 +15,12 @@ const getTransactionCount = async (req, res) => {
     const { start_date, end_date } = req.query;
     let results = []
     if (start_date != null && start_date !== '' && end_date != null && end_date !== '') {
-      results = await pool.query("SELECT COUNT(summary_id) FROM transaction WHERE order_date >= ? AND order_date <= ? ", [
+      results = await pool.query("SELECT COUNT(order_id) as count FROM transaction WHERE order_date >= ? AND order_date <= ? ", [
         start_date,
         end_date
       ])
     } else {
-      results = await pool.query("SELECT COUNT(summary_id) FROM transaction");
+      results = await pool.query("SELECT COUNT(order_id) as count FROM transaction");
     }
     if (isEmpty(results)) results = [{ count: 0}]
     return res.status(200).json(results[0]);

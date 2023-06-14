@@ -1,101 +1,145 @@
-import Layout from '@/layouts';
-import { Input, Date, Table, Button } from '@/components';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import moment from 'moment';
 import { calculateSupport, calculateSupportPercentage, generateAssociationRules, generateFrequentItemsets } from '@/functions';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Input, Date, Table, Button } from '@/components';
+import Layout from '@/layouts';
+import * as yup from "yup";
+import moment from 'moment';
+import axios from "axios";
+
+type FormData = yup.InferType<typeof schema>;
+const schema = yup.object({
+  start_date: yup.date().nullable().notRequired(),
+  end_date: yup.date().nullable().notRequired(),
+  min_support: yup.number().transform((value) => (isNaN(value) ? undefined : value)).required("Min Support harus diisi"),
+  min_confidence: yup.number().transform((value) => (isNaN(value) ? undefined : value)).required("Min Confidence harus diisi"),
+  total_record: yup.number(),
+}).required();
 
 export default function Dashboard() {
   const { push } = useRouter();
-  const [data, setData] = useState<any[]>([]);
-  const [process, setProcess] = useState<any>({
-    start_date: "",
-    end_date: "",
-    min_support: "",
-    min_confidence: "",
-    total_record: ""
+  const [datas, setDatas] = useState<any[]>([]);
+  const [count, setCount] = useState<any>(0);
+  const [loadingTable, setLoadingTable] = useState<boolean>(true);
+  const { control, register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
+    resolver: yupResolver(schema)
   });
-
-  const handleChange = ({ target: { name, value } }: any) => {
-    setProcess({ ...process, [name]: value });
-  }
 
   const header = [
     {
       fieldId: 'index',
-      label: 'No'
+      label: 'No',
+      width: 60
     },
     {
       fieldId: 'processed_date',
-      label: 'Process Date',
+      label: 'Tanggal Proses',
       renderItem: (processed_date: string) => (<>
         {moment(processed_date).format('DD-MM-yyyy hh:mm')}
-      </>)
+      </>),
+      width: 140
     },
     {
       fieldId: 'start_date',
-      label: 'Start Date',
+      label: 'Tanggal Mulai',
       renderItem: (start_date: string) => (<>
-        {start_date ? moment(start_date).format('yyyy-MM-DD') : "All"}
-      </>)
+        {start_date ? moment(start_date).format('DD-MM-yyyy') : "Semua Tanggal"}
+      </>),
+      width: 130
     },
     {
       fieldId: 'end_date',
-      label: 'End Date',
+      label: 'Tanggal Akhir',
       renderItem: (end_date: string) => (<>
-        {end_date ? moment(end_date).format('yyyy-MM-DD') : "All"}
-      </>)
+        {end_date ? moment(end_date).format('DD-MM-yyyy') : "Semua Tanggal"}
+      </>),
+      width: 130
     },
     {
       fieldId: 'min_support',
       label: 'Min Support',
       renderItem: (min_support: string) => (<>
         {min_support}%
-      </>)
+      </>),
+      width: 66
     },
     {
       fieldId: 'min_confidence',
       label: 'Min Confidence',
       renderItem: (min_confidence: string) => (<>
         {min_confidence}%
-      </>)
+      </>),
+      width: 66
     },
     {
       fieldId: 'total_order',
-      label: 'Total Record'
+      label: 'Total Data',
+      width: 80
     },
   ];
+
+  useEffect(() => {
+    getSummary();
+  }, []);
+
+  useEffect(() => {
+    const start_date = watch("start_date");
+    const end_date = watch("end_date");
+    getTotalTransaction(start_date, end_date);
+  }, [watch("start_date"), watch("end_date")]);
 
   const handleRowClick = (item: any) => {
     push(`/processing/${item.summary_id}`);
   };
 
   const getSummary = async () => {
+    setLoadingTable(true)
     try {
       const { data } = await axios.get("/api/process");
-      setData(data)
+      setDatas(data)
+      setLoadingTable(false)
     } catch (error: any) {
       console.error(error.response.data.message);
     }
   }
 
-  useEffect(() => {
-    getSummary();
-  }, []);
+  const getTotalTransaction = async (start_date: Date | null | undefined, end_date: Date | null | undefined) => {
+    const startDate = start_date ? moment(start_date).toDate() : null
+    const endDate = end_date ? moment(end_date).toDate() : null
+    try {
+      const { data } = await axios.get("/api/count/transaction", {
+        params: {
+          start_date: startDate ? moment(startDate).format('yyyy-MM-DD') : null,
+          end_date: endDate ? moment(endDate).format('yyyy-MM-DD') : null
+        }
+      });
+      setCount(data.count)
+    } catch (error: any) {
+      console.error(error.response.data.message);
+    }
+  }
 
-  const handleSubmit = async () => {
-    await handleCalculate();
+  const onSubmit = async (fields: FormData) => {
+    const startDate = fields.start_date ? moment(fields.start_date).toDate() : null
+    const endDate = fields.end_date ? moment(fields.end_date).toDate() : null
+    await handleCalculate({ start_date: startDate, end_date: endDate, ...fields });
     await getSummary();
   };
 
+  const handleCalculate = async (fields: FormData) => {
+    const { start_date, end_date, min_support, min_confidence } = fields
 
-  const handleCalculate = async () => {
-    const { start_date, end_date, min_support, min_confidence } = process
-
+    console.log("start_date", moment(start_date).format('yyyy-MM-DD'));
+    console.log("end_date", end_date);
+    
     // Get transaction
     const { data } = await axios.get("/api/transaction", {
-      params: { start_date, end_date }
+      params: {
+        start_date: start_date ? moment(start_date).format('yyyy-MM-DD') : null,
+        end_date: start_date ? moment(end_date).format('yyyy-MM-DD') : null
+      }
     })
 
     // Post summary
@@ -180,72 +224,85 @@ export default function Dashboard() {
               Processing Apriori
             </h3>
           </div>
-          <div className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <Date
-              label="Start Date"
-              dateFormat="DD-MM-YY"
+              label="Tanggal Mulai"
+              placeholder="Tanggal Mulai"
+              dateFormat="DD-MM-yyyy"
               timeFormat={false}
               name="start_date"
-              onChange={handleChange}
-              value={process.start_date}
+              control={control}
+              error={errors.start_date?.message}
             />
             <Date
-              label="End Date"
-              dateFormat="DD-MM-YY"
+              label="Tanggal Akhir"
+              placeholder="Tanggal Akhir"
+              dateFormat="DD-MM-yyyy"
               timeFormat={false}
               name="end_date"
-              onChange={handleChange}
-              value={process.end_date}
+              control={control}
+              error={errors.end_date?.message}
             />
             <Input
+              mask="99"
+              maskChar={null}
+              type='masked'
               label="Min Support"
-              name="min_support"
-              onChange={handleChange}
-              value={process.min_support}
+              placeholder='Min Support'
+              name='min_support'
+              prefix="%"
+              register={register}
+              error={errors.min_support?.message}
             />
             <Input
+              mask="99"
+              maskChar={null}
+              type='masked'
               label="Min Confidence"
-              name="min_confidence"
-              onChange={handleChange}
-              value={process.min_confidence}
+              placeholder='Min Confidence'
+              name='min_confidence'
+              prefix="%"
+              register={register}
+              error={errors.min_confidence?.message}
             />
             <Input
-              label="Total Record"
-              value="600"
+              label="Total Data"
+              name='total_record'
+              register={register}
+              value={count}
               disabled={true}
             />
             <div className="pt-4">
               <Button
-                title="Upload"
+                type="submit"
+                title="Proses"
                 color="primary"
-                onClick={handleSubmit}
+                loading={isSubmitting}
               />
             </div>
-          </div>
+          </form>
         </div>
       </div>
       <div className="col-span-2">
         <div className="bg-white py-9 px-8 rounded-xl shadow-[0px_0px_20px_rgba(56,71,109,0.03)]">
-          <div className="mb-6 flex flex-col  gap-2">
-            <h3 className="text-xl text-[#464E5F] font-semibold uppercase">
-              Processing List
+          <div className="mb-6 flex flex-col">
+            <h3 className="mb-1.5 text-xl text-[#464E5F] font-semibold uppercase">
+              Proses
             </h3>
-            <p className="text-sm text-[#B5B5C3]">
-              Total Record {data.length}
+            <p className="text-gray-400">
+              Total {datas.length}
             </p>
           </div>
-          <div className="flex flex-col max-h-[calc(100vh_-_20rem)]">
-            <div className="overflow-x-auto overflow-y-auto">
-              <div className="align-middle inline-block min-w-full">
-                <div className="overflow-hidden border border-[#BDBDBD] rounded-lg">
-                  <Table
-                    data={data}
-                    headers={header}
-                    action={true}
-                    onRowClick={handleRowClick}
-                  />
-                </div>
-              </div>
+          <div className="flex flex-col">
+            <div className="border border-[#BDBDBD] rounded-lg">
+              <Table
+                data={datas}
+                headers={header}
+                truncate={true}
+                action={true}
+                onRowClick={handleRowClick}
+                loading={loadingTable}
+              />
             </div>
           </div>
         </div>

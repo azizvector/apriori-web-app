@@ -10,8 +10,8 @@ import axios from "axios";
 
 type FormData = yup.InferType<typeof schema>;
 const schema = yup.object({
-  username: yup.string().required(),
-  password: yup.string().required(),
+  username: yup.string().required("Username harus diisi"),
+  password: yup.string().required("Password harus diisi"),
 }).required();
 
 export default function Login() {
@@ -28,46 +28,54 @@ export default function Login() {
     }
   }, []);
 
-  const onClickLogin = async (fields: FormData) => {
+  const onSubmit = async (fields: FormData) => {
     setError('');
     try {
       const { data } = await axios.post("/api/auth/login", fields);
       Cookie.set('token', data)
       push('/dashboard')
     } catch (error: any) {
-      setError(error.response.data.message || "Wrong username or password!");
+      setError(error.response.data.message || "Username atau password salah!");
     }
   }
 
   return (
     <div className="min-h-full h-[100vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="mx-auto w-full max-w-md">
-        <div className="absolute left-0 -bottom-7 flex items-center pointer-events-none">
+        <div className="absolute z-10 left-6 bottom-2 flex items-center pointer-events-none">
           <Image
             src="/logistic.png"
             alt="Logistic"
-            width={400}
-            height={400}
+            width={300}
+            height={300}
           />
         </div>
-        <div className="absolute right-0 -bottom-7 flex items-center pointer-events-none">
+        <div className="absolute z-10 right-6 bottom-2 flex items-center pointer-events-none">
           <Image
             src="/store.png"
-            alt="Logistic"
-            width={400}
-            height={400}
+            alt="Store"
+            width={300}
+            height={300}
           />
         </div>
-        <div className="mt-5 bg-white py-14 px-14 rounded-xl shadow-[0px_0px_20px_rgba(56,71,109,0.03)]">
+        <div className="absolute left-12 bottom-0 flex items-center justify-center pointer-events-none">
+          <Image
+            src="/bg.svg"
+            alt="Bg"
+            width={1000}
+            height={1000}
+          />
+        </div>
+        <div className="relative z-10 mt-5 bg-white py-14 px-14 rounded-xl shadow-[0px_0px_20px_rgba(56,71,109,0.03)]">
           <div className="mb-10 flex flex-col items-center justify-between gap-2">
             <h3 className="text-xl text-[#464E5F] font-semibold uppercase">
-              Sign in to your account
+              Login Akun
             </h3>
-            <p className="text-sm text-[#B5B5C3]">
-              Applications Of Apriori Algorithm
+            <p className="text-sm text-gray-400">
+              Aplikasi Algoritma Apriori
             </p>
           </div>
-          <form className="space-y-6" onSubmit={handleSubmit(onClickLogin)}>
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <Input
               label="Username"
               placeholder='Username'
@@ -83,12 +91,14 @@ export default function Login() {
               error={errors.password?.message}
               register={register}
             />
-            <Button
-              type="submit"
-              title="Login"
-              color="primary"
-              loading={isSubmitting}
-            />
+            <div className="pt-4">
+              <Button
+                type="submit"
+                title="Login"
+                color="primary"
+                loading={isSubmitting}
+              />
+            </div>
           </form>
           {error && (
             <div className="flex items-center gap-2 mt-2">
