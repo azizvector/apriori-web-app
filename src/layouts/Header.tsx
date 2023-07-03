@@ -14,9 +14,9 @@ export interface IHeaderMenu {
 }
 
 const navigation: IHeaderMenu[] = [
-  { label: 'Dashboard', href: '/dashboard' },
-  { label: 'Upload', href: '/upload' },
-  { label: 'Processing', href: '/processing' },
+  { label: 'Dasbor', href: '/dashboard' },
+  { label: 'Unggah', href: '/upload' },
+  { label: 'Proses', href: '/processing' },
 ]
 
 export const Header = (): React.ReactElement => {

@@ -26,7 +26,7 @@ export default function Login() {
     if (token) {
       push('/dashboard');
     }
-  }, []);
+  });
 
   const onSubmit = async (fields: FormData) => {
     setError('');

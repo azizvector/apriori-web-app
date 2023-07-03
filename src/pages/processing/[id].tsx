@@ -84,7 +84,7 @@ export default function Dashboard() {
       fieldId: 'confidence',
       label: 'Confidence',
       renderItem: (confidence: number) => (<>
-        {twoDecimalPlacesWithoutRound(confidence)}%
+        {twoDecimalPlacesWithoutRound(confidence * 100)}%
       </>),
       width: 80
     },
@@ -161,16 +161,16 @@ export default function Dashboard() {
     <div className="grid gap-11">
       <div className="flex items-center justify-between gap-4">
         <h3 className="text-3xl text-[#464E5F] font-semibold">
-          Details Apriori
+          Detail Apriori
         </h3>
         <div className="flex items-center justify-between gap-4 ml-4">
           <Button
-            title="Back"
+            title="Kembali"
             color="secondary"
             onClick={() => back()}
           />
           <Button
-            title="Delete"
+            title="Hapus"
             color="danger"
             onClick={handleDelete}
           />
@@ -179,7 +179,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 gap-11">
         <div className="col-span-1">
           <div className="text-[#464E5F] bg-gray-50 py-9 px-8 rounded-xl space-y-3">
-            <span className="text-lg font-semibold">Notes!</span>
+            <span className="text-lg font-semibold">Catatan!</span>
             <div className="space-y-1.5">
               <span className="font-medium">Positive Correlation</span>
               <div>Jika lift ratio lebih besar dari 1, itu menunjukkan bahwa hubungan antara item atau variabel yang dianalisis lebih sering terjadi daripada kejadian acak secara umum. Menunjukkan bahwa ada keterkaitan yang positif dan signifikan antara item-item tersebut.</div>
@@ -260,7 +260,7 @@ export default function Dashboard() {
                 Lift Ratio
               </h3>
               <p className="text-gray-400">
-                Total {datas?.support.length}
+                Total {datas?.confidence.length}
               </p>
             </div>
             <div className="flex flex-col">
@@ -304,7 +304,7 @@ export default function Dashboard() {
                 Confidence
               </h3>
               <p className="text-gray-400">
-                Total {datas?.support.length}
+                Total {datas?.confidence.length}
               </p>
             </div>
             <div className="flex flex-col">

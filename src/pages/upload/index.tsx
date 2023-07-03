@@ -79,7 +79,7 @@ export default function Upload() {
   const handleChangeFIle = (event: any) => {
     setError("")
     if (!some(excelType, item => [event.target.files[0].type].includes(item))) {
-      setError("hanya dapat mengunggah file XLS, XLSX, CSV")
+      setError("hanya dapat mengunggah file XLS, XLSX")
       return
     }
     setFiles(event.target.files[0])

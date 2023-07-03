@@ -221,7 +221,7 @@ export default function Dashboard() {
         <div className="bg-white py-9 px-8 rounded-xl shadow-[0px_0px_20px_rgba(56,71,109,0.03)]">
           <div className="mb-6 flex items-center justify-between gap-4">
             <h3 className="text-xl text-[#464E5F] font-semibold uppercase">
-              Processing Apriori
+              Proses Apriori
             </h3>
           </div>
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
