@@ -14,7 +14,7 @@ export interface IHeaderMenu {
 }
 
 const navigation: IHeaderMenu[] = [
-  { label: 'Dasbor', href: '/dashboard' },
+  { label: 'Beranda', href: '/dashboard' },
   { label: 'Unggah', href: '/upload' },
   { label: 'Proses', href: '/processing' },
 ]

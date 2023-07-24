@@ -88,6 +88,7 @@ export function generateAssociationRules(dataset: any, itemset: any, frequentIte
       let consequent = itemset.filter((item: any) => !antecedent.includes(item));
       let confidence = calculateConfidence(dataset, antecedent, consequent, frequentItemsets);
       if (confidence >= minConfidence) {
+        confidence = twoDecimalPlacesWithoutRound(confidence * 100);
         rules.push({ antecedent, consequent, confidence });
       }
     }
@@ -117,7 +118,7 @@ export function getSubsets(itemset: any, k: any) {
 export function calculateConfidence(dataset: any, antecedent: any, consequent: any, frequentItemsets: any) {
   let supportA = calculateSupport(dataset, antecedent);
   let supportAB = calculateSupport(dataset, antecedent.concat(consequent));
-  return Math.round((supportAB / supportA + Number.EPSILON) * 100) / 100;
+  return (supportAB / supportA);
 }
 
 export function calculateSupport(dataset: any, itemset: any) {

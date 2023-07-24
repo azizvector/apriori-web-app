@@ -84,7 +84,7 @@ export default function Dashboard() {
       fieldId: 'confidence',
       label: 'Confidence',
       renderItem: (confidence: number) => (<>
-        {twoDecimalPlacesWithoutRound(confidence * 100)}%
+        {twoDecimalPlacesWithoutRound(confidence)}%
       </>),
       width: 80
     },
@@ -113,7 +113,10 @@ export default function Dashboard() {
     {
       fieldId: 'lift',
       label: 'Lift',
-      width: 80
+      width: 80,
+      renderItem: (lift: number) => (<>
+        {twoDecimalPlacesWithoutRound(lift)}
+      </>),
     },
     {
       fieldId: 'description',
@@ -160,7 +163,7 @@ export default function Dashboard() {
   return (
     <div className="grid gap-11">
       <div className="flex items-center justify-between gap-4">
-        <h3 className="text-3xl text-[#464E5F] font-semibold">
+        <h3 className="text-3xl text-[#464E5F] font-semibold uppercase">
           Detail Apriori
         </h3>
         <div className="flex items-center justify-between gap-4 ml-4">
@@ -220,7 +223,7 @@ export default function Dashboard() {
               </div>
               <div className="space-y-1">
                 <div className="text-gray-400">
-                  Start Date
+                  Tanggal Mulai
                 </div>
                 <div className="text-lg text-gray-500 font-semibold">
                   {datas?.summary?.end_date ? moment(datas?.summary?.start_date).format('DD-MM-yyyy') : "Semua Tanggal"}
@@ -228,7 +231,7 @@ export default function Dashboard() {
               </div>
               <div className="space-y-1">
                 <div className="text-gray-400">
-                  End Date
+                  Tanggal Akhir
                 </div>
                 <div className="text-lg text-gray-500 font-semibold">
                   {datas?.summary?.end_date ? moment(datas?.summary?.end_date).format('DD-MM-yyyy') : "Semua Tanggal"}
@@ -236,7 +239,7 @@ export default function Dashboard() {
               </div>
               <div className="space-y-1">
                 <div className="text-gray-400">
-                  Total record
+                  Tanggal Proses
                 </div>
                 <div className="text-lg text-gray-500 font-semibold">
                   {moment(datas?.summary?.processed_date).format('DD-MM-yyyy')}
@@ -244,7 +247,7 @@ export default function Dashboard() {
               </div>
               <div className="space-y-1">
                 <div className="text-gray-400">
-                  Process Date
+                  Total Data
                 </div>
                 <div className="text-lg text-gray-500 font-semibold">
                   {datas?.summary?.total_order}

@@ -1,7 +1,7 @@
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import { Controller, Control } from "react-hook-form";
-import moment from 'moment';
 import Datetime from 'react-datetime';
+import { useEffect, useRef, useState } from 'react';
 
 interface IDate {
   label?: string;
@@ -27,6 +27,32 @@ export function Date({
   disabled,
   error
 }: IDate): React.ReactElement {
+
+  const [open, setOpen] = useState<boolean>(false);
+  const dateRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dateRef.current &&
+        !dateRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  });
+
+  const handleChange = (event: any, onChange: any) => {
+    onChange(event);
+    setOpen(false);
+  }
+
   return (
     <div>
       {label && (
@@ -34,19 +60,21 @@ export function Date({
           {label}
         </label>
       )}
-      <div className="relative">
+      <div className="relative" ref={dateRef}>
         <Controller
           name={name}
           control={control}
           render={({ field }) =>
             <Datetime
+              open={open}
               input={true}
               timeFormat={timeFormat}
               dateFormat={dateFormat}
-              onChange={field.onChange}
+              onChange={(event) => handleChange(event, field.onChange)}
               closeOnSelect={true}
               value={value}
               inputProps={{
+                onMouseDown: () => setOpen(true),
                 placeholder: placeholder,
                 name: field.name,
                 disabled: disabled,

@@ -30,7 +30,7 @@ export function Button({
   return (
     <button
       type={type}
-      disabled={disabled || loading}
+      disabled={notClick}
       className={classNames(
         className,
         "w-full flex justify-center items-center py-2.5 px-6 border border-transparent rounded-md font-medium focus:outline-none", {
@@ -42,7 +42,7 @@ export function Button({
       })}
       onClick={handleClick}
     >
-      {notClick && (
+      {loading && (
         <svg
           className="animate-spin mr-3 h-5 w-5 text-white"
           xmlns="http://www.w3.org/2000/svg"

@@ -1,4 +1,4 @@
-import { calculateSupport, calculateSupportPercentage, generateAssociationRules, generateFrequentItemsets } from '@/functions';
+import { calculateConfidence, calculateSupport, calculateSupportPercentage, generateAssociationRules, generateFrequentItemsets, twoDecimalPlacesWithoutRound } from '@/functions';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from "react-hook-form";
@@ -131,9 +131,6 @@ export default function Dashboard() {
   const handleCalculate = async (fields: FormData) => {
     const { start_date, end_date, min_support, min_confidence } = fields
 
-    console.log("start_date", moment(start_date).format('yyyy-MM-DD'));
-    console.log("end_date", end_date);
-    
     // Get transaction
     const { data } = await axios.get("/api/transaction", {
       params: {
@@ -169,7 +166,7 @@ export default function Dashboard() {
         summary_id: summary_id,
         itemset: itemset.length,
         candidate: itemset.toString(),
-        support: support
+        support: twoDecimalPlacesWithoutRound(support)
       })
     }
 
@@ -186,13 +183,12 @@ export default function Dashboard() {
       for (let rule of rules) {
 
         // Calculate support values
-        const supportAB = calculateSupport(dataset, rule.antecedent.concat(rule.consequent)); // 3 (Occurrences of ['bread', 'milk'])
-        const supportA = calculateSupport(dataset, rule.antecedent); // 5 (Occurrences of ['bread'])
-        const supportB = calculateSupport(dataset, rule.consequent); // 4 (Occurrences of ['milk'])
-        const N = dataset.length; // 6 (Total number of transactions)
+        let confidence = calculateConfidence(dataset, rule.antecedent, rule.consequent, frequentItemsets);
+        const supportB = calculateSupport(dataset, rule.consequent);
+        const N = dataset.length;
 
         // Calculate lift ratio
-        const liftRatio = (supportAB / N) / ((supportA / N) * (supportB / N));
+        const liftRatio = twoDecimalPlacesWithoutRound(confidence / (supportB / N));
 
         let description: string = ''
         if (liftRatio > 1) {
@@ -203,7 +199,7 @@ export default function Dashboard() {
           description = 'INDEPENDENT';
         }
 
-        ruleArray.push([summary_id, `${rule.antecedent.join(',')} -> ${rule.consequent.join(',')}`, rule.confidence, Math.round((liftRatio + Number.EPSILON) * 100) / 100, description])
+        ruleArray.push([summary_id, `${rule.antecedent.join(',')} -> ${rule.consequent.join(',')}`, rule.confidence, liftRatio, description])
       }
     }
 
@@ -224,7 +220,7 @@ export default function Dashboard() {
               Proses Apriori
             </h3>
           </div>
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <Date
               label="Tanggal Mulai"
               placeholder="Tanggal Mulai"
