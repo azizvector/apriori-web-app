@@ -17,50 +17,34 @@
 <table>
   <tr>
     <td width="50%">Login</td>
-    <td width="50%">Alert</td>
+    <td width="50%">Beranda</td>
   </tr>
   <tr>
     <td width="50%" style="padding: 0;">
-      <img alt="login" src="./public/images/Macbook-Air-localhost (2).png">
+      <img alt="login" src="./public/images/login.png">
     </td>
     <td width="50%" style="padding: 0;">
-     <img alt="login" src="./public/images/Macbook-Air-localhost (2).png">
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">Accordion</td>
-    <td width="50%">Alert</td>
-  </tr>
-  <tr>
-    <td width="50%" style="padding: 0;">
-      <img alt="accordion" src="https://placehold.co/600x400?text=Your+Screenshot+here">
-    </td>
-    <td width="50%" style="padding: 0;">
-     <img alt="accordion" src="https://placehold.co/600x400?text=Your+Screenshot+here">
+     <img alt="beranda" src="./public/images/beranda.png">
     </td>
   </tr>
   <tr>
-    <td width="50%">Accordion</td>
-    <td width="50%">Alert</td>
+    <td width="50%">Unggah</td>
+    <td width="50%">Proses</td>
   </tr>
   <tr>
     <td width="50%" style="padding: 0;">
-      <img alt="accordion" src="https://placehold.co/600x400?text=Your+Screenshot+here">
+      <img alt="unggah" src="./public/images/unggah.png">
     </td>
     <td width="50%" style="padding: 0;">
-     <img alt="accordion" src="https://placehold.co/600x400?text=Your+Screenshot+here">
+     <img alt="proses" src="./public/images/proses.png">
     </td>
   </tr>
   <tr>
-    <td width="50%">Accordion</td>
-    <td width="50%">Alert</td>
+    <td width="50%">Detail</td>
   </tr>
   <tr>
     <td width="50%" style="padding: 0;">
-      <img alt="accordion" src="https://placehold.co/600x400?text=Your+Screenshot+here">
-    </td>
-    <td width="50%" style="padding: 0;">
-     <img alt="accordion" src="https://placehold.co/600x400?text=Your+Screenshot+here">
+      <img alt="detail" src="./public/images/detail.png">
     </td>
   </tr>
 </table>
